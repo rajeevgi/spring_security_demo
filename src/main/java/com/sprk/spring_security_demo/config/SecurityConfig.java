@@ -21,59 +21,60 @@ import com.sprk.spring_security_demo.service.CustomUserDetailsService;
 public class SecurityConfig {
 
         @Bean
-        public PasswordEncoder passwordEncoder(){
+        public PasswordEncoder passwordEncoder() {
                 return new BCryptPasswordEncoder();
         }
 
         @Bean
-        public UserDetailsService userDetailsService(){
+        public UserDetailsService userDetailsService() {
                 return new CustomUserDetailsService();
         }
 
         @Bean
-        public AuthenticationProvider authenticationProvider(){
+        public AuthenticationProvider authenticationProvider() {
                 DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
                 authProvider.setPasswordEncoder(passwordEncoder());
                 authProvider.setUserDetailsService(userDetailsService());
                 return authProvider;
         }
-/*
-    @Bean
-    public UserDetailsService userDetailsService() {
 
-        UserDetails rajeev = User
-                .withUsername("rajeev")
-                .password("{noop}123")
-                .roles("USER")
-                .build();
+        /*
+         * @Bean
+         * public UserDetailsService userDetailsService() {
+         * 
+         * UserDetails rajeev = User
+         * .withUsername("rajeev")
+         * .password("{noop}123")
+         * .roles("USER")
+         * .build();
+         * 
+         * UserDetails admin = User
+         * .withUsername("parth")
+         * .password("{noop}admin123")
+         * .roles("ADMIN", "USER")
+         * .build();
+         * 
+         * UserDetails manager = User
+         * .withUsername("Rohan")
+         * .password("{noop}man123")
+         * .roles("ADMIN", "USER", "MANAGER")
+         * .build();
+         * 
+         * return new InMemoryUserDetailsManager(rajeev, admin, manager);
+         * }
+         */
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http.csrf(csrf -> csrf.disable());
+                http.authorizeHttpRequests((request) -> request
+                                .requestMatchers("/register", "/", "/home").permitAll()
+                                .anyRequest().authenticated());
 
-        UserDetails admin = User
-                .withUsername("parth")
-                .password("{noop}admin123")
-                .roles("ADMIN", "USER")
-                .build();
+                http.formLogin(Customizer.withDefaults());
+                http.httpBasic(Customizer.withDefaults());
 
-        UserDetails manager = User
-                .withUsername("Rohan")
-                .password("{noop}man123")
-                .roles("ADMIN", "USER", "MANAGER")
-                .build();
-
-        return new InMemoryUserDetailsManager(rajeev, admin, manager);
-    }
-*/
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http.authorizeHttpRequests((request) -> request
-                .requestMatchers("/","/home").permitAll()
-                .anyRequest().authenticated()
-        );
-
-        http.formLogin(Customizer.withDefaults());
-        http.httpBasic(Customizer.withDefaults());
-
-        return http.build();
-    }
+                return http.build();
+        }
 
 }

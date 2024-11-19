@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.sprk.spring_security_demo.entity.UserInfo;
+import java.util.List;
+
 
 
 @Repository
@@ -13,4 +15,6 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
 
     // Custom Method to find user with username
     Optional<UserInfo> findByUsername(String username);
+
+    Optional<UserInfo> findByRoles(String roles);
 }
