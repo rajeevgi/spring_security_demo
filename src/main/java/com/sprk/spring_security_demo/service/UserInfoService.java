@@ -17,13 +17,13 @@ public class UserInfoService {
     private PasswordEncoder passwordEncoder;
 
     // Post Mapping to assign role to user
-    public String addRoleToUser(String role, int id) {
+    public String addRoleToUser(int id, String role) {
        
         UserInfo userInfo = userInfoRepository.findById(id).orElseThrow(() -> new RuntimeException("User Not found!"));
 
-        UserInfo userInfo2 = userInfoRepository.findByRoles(role).orElseThrow(() -> new RuntimeException("Role not found!"));
+        // UserInfo userInfo2 = userInfoRepository.findByRoles(role).orElseThrow(() -> new RuntimeException("Role not found!"));
 
-        userInfo.getRoles().split(",");
+        userInfo.setRoles(role);
 
         userInfoRepository.save(userInfo);
 
@@ -46,7 +46,4 @@ public class UserInfoService {
         return " User Added Successfully...";
     }
 
-    
-
-    
 }
