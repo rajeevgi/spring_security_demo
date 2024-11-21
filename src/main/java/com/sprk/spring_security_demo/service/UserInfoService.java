@@ -16,14 +16,22 @@ public class UserInfoService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Post Mapping to assign role to user
+    // Put Mapping to assign role to user
     public String addRoleToUser(int id, String role) {
        
         UserInfo userInfo = userInfoRepository.findById(id).orElseThrow(() -> new RuntimeException("User Not found!"));
 
-        // UserInfo userInfo2 = userInfoRepository.findByRoles(role).orElseThrow(() -> new RuntimeException("Role not found!"));
+        String existingRoleString = userInfo.getRoles();
 
-        userInfo.setRoles(role);
+        StringBuilder existingRoles = new StringBuilder(userInfo.getRoles());
+
+        if(!existingRoleString.contains(role)){
+            existingRoles.append(",").append(role);
+        }else{
+            return "Role Already exists.";
+        }
+
+        userInfo.setRoles(existingRoles.toString());
 
         userInfoRepository.save(userInfo);
 
@@ -44,6 +52,35 @@ public class UserInfoService {
         userInfoRepository.save(userInfo);
 
         return " User Added Successfully...";
+    }
+
+    // Put mapping to remove Role from user.
+    public String deleteRoleFromUser(int id, String role) {
+        
+        UserInfo userInfo = userInfoRepository.findById(id).orElseThrow(() -> new RuntimeException("User Not Found!"));
+
+        String existingRoleString = userInfo.getRoles();   
+
+        StringBuilder existingRoles = new StringBuilder(userInfo.getRoles());
+
+        if(existingRoleString.contains(role)){
+            int startIndex = existingRoleString.indexOf(role) == 0 ? existingRoleString.indexOf(role) : existingRoleString.indexOf(role) - 1;
+
+            int lengthAdd = existingRoleString.indexOf(role) + role.length();
+
+            int endIndex = existingRoleString.indexOf(role) == 0 ? (lengthAdd+1) : lengthAdd;
+
+            existingRoles.delete(startIndex, endIndex);
+            
+        }else{
+            return " Role not found...";
+        }
+
+        userInfo.setRoles(existingRoles.toString());
+
+        userInfoRepository.save(userInfo);
+
+        return " Role deleted from user Successfully....";
     }
 
 }

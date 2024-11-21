@@ -5,6 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,9 +52,15 @@ public class DemoController {
         return userInfoService.saveUser(userInfo);
     }
 
-    @PostMapping("/add_role/{id}")
+    @PutMapping("/add_role/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String addRoleToUser(@PathVariable int id, @RequestParam String role){
         return userInfoService.addRoleToUser(id, role);
+    }
+
+    @PutMapping("/delete_role/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public String deleteRoleFromUser(@PathVariable int id, @RequestParam String role){
+        return userInfoService.deleteRoleFromUser(id, role);
     }
 }
